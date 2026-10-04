@@ -14,6 +14,7 @@ app = FastAPI(
 )
 
 
+# Create database tables when the application starts
 create_tables()
 
 
@@ -30,6 +31,10 @@ def health_check():
         "status": "healthy"
     }
 
+
+# --------------------------------------------------
+# CREATE AN INVESTIGATION
+# --------------------------------------------------
 
 @app.post(
     "/api/investigations",
@@ -66,4 +71,78 @@ def create_investigation(investigation: InvestigationCreate):
         "sources": investigation.sources,
         "status": "created",
         "created_at": created_at,
+    }
+
+
+# --------------------------------------------------
+# GET ALL INVESTIGATIONS
+# --------------------------------------------------
+
+@app.get(
+    "/api/investigations",
+    response_model=list[InvestigationResponse],
+)
+def get_investigations():
+    connection = get_connection()
+
+    rows = connection.execute(
+        """
+        SELECT id, query, sources, status, created_at
+        FROM investigations
+        ORDER BY id DESC
+        """
+    ).fetchall()
+
+    connection.close()
+
+    investigations = []
+
+    for row in rows:
+        investigations.append(
+            {
+                "id": row["id"],
+                "query": row["query"],
+                "sources": json.loads(row["sources"]),
+                "status": row["status"],
+                "created_at": row["created_at"],
+            }
+        )
+
+    return investigations
+
+
+# --------------------------------------------------
+# GET ONE INVESTIGATION
+# --------------------------------------------------
+
+@app.get(
+    "/api/investigations/{investigation_id}",
+    response_model=InvestigationResponse,
+)
+def get_investigation(investigation_id: int):
+    connection = get_connection()
+
+    row = connection.execute(
+        """
+        SELECT id, query, sources, status, created_at
+        FROM investigations
+        WHERE id = ?
+        """,
+        (investigation_id,),
+    ).fetchone()
+
+    connection.close()
+
+    if row is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Investigation not found",
+        )
+
+    return {
+        "id": row["id"],
+        "query": row["query"],
+        "sources": json.loads(row["sources"]),
+        "status": row["status"],
+        "created_at": row["created_at"],
     }
