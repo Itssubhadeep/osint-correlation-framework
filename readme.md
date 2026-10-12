@@ -1,286 +1,306 @@
-# 🕵️‍♂️ OSINT Framework: Multi-Platform Social Media Crawling & Intelligence Extraction
+# 🛰️ OSINT Correlation Framework
 
-**A college minor project for collecting publicly available OSINT data and identifying potential cross-source entity relationships using multiple independent correlation signals.**
+### 🔍 Multi-Source Intelligence Collection & Cross-Source Indicator Analysis
 
-## 🎯 Project Goal
+> 🛡️ **Transforming scattered public information into structured, explainable intelligence.**
 
-The system aims to:
-- Collect publicly available data from multiple online sources
-- Extract cyber-relevant entities (usernames, emails, URLs, phone numbers, etc.)
-- Normalize extracted entities for cross-platform comparison
-- Correlate entities across different sources using multiple independent signals
-- Calculate explainable confidence scores
-- Preserve source provenance (chain of custody)
-- Present investigation results through a web dashboard and REST API
+**OSINT Correlation Framework** is a Python-powered intelligence collection platform that aggregates publicly available information from multiple sources, extracts technical indicators, and identifies shared indicators across independent records.
 
-## 🚀 **IMPORTANT: Reddit API Credentials REQUIRED**
-
-**To answer your question: YES, you NEED Reddit API credentials.** The Reddit crawler does NOT connect automatically - it requires explicit API authentication.
-
-### 🔑 How to Get Reddit API Credentials:
-1. Go to: https://www.reddit.com/prefs/apps
-2. Click "Create App" or "Create Another App"
-3. Choose "script" as the app type
-4. Fill in the form (name, description, about URL, redirect URL)
-5. Click "Create App"
-6. **SAVE YOUR CREDENTIALS:**
-   - **Client ID** (found under the app name)
-   - **Client Secret** (found under 'secret' field)
-7. Set these in your `.env` file:
-   ```
-   REDDIT_CLIENT_ID=your_actual_client_id_here
-   REDDIT_CLIENT_SECRET=your_actual_client_secret_here
-   REDDIT_USER_AGENT=OSINTFrameworkDemo/1.0 by your_reddit_username
-   ```
-
-**Without these credentials, the Reddit crawler will NOT work.**
-
-## 🚀 Mid-Term Focus: Working Proof of Concept
-
-For the mid-term evaluation, we have implemented:
-- ✅ **Reddit crawler** using PRAW (Reddit API) - **requires credentials**
-- ✅ **Entity extraction module** (usernames, emails, URLs, phones, hashtags, crypto)
-- ✅ **SQLite database** with provenance tracking
-- ✅ **REST API endpoints** for investigations
-- ✅ **Demo scripts** to showcase functionality
-
-This foundation enables the future addition of more platforms (YouTube, Twitter/X, etc.) and the multi-signal correlation engine.
-
-## 📊 Current Status
-
-**Ready for mid-term demonstration:**
-
-### Implemented Components:
-- **FastAPI application** with health-check and API documentation
-- **Reddit crawler** (`app/reddit_crawler.py`) - fetches user data, posts, comments (**requires API credentials**)
-- **Entity extractor** (`app/entity_extractor.py`) - regex-based extraction of 6 entity types
-- **Enhanced database** (`app/database.py`) - stores crawled data, entities, provenance
-- **Demo script** (`demo_midterm.py`) - showcases extraction and storage capabilities
-- **Test suite** (`test_demo.py`) - verifies component functionality
-
-### Database Schema:
-- `investigations` - tracking investigation queries
-- `crawled_data` - raw platform-specific data (JSON format)
-- `entities` - extracted and normalized entities with provenance
-- Proper indexing for fast lookup and correlation
-
-## 🔧 Setup Instructions
-
-### 1. Clone Repository & Activate Environment
-```bash
-# If you haven't already cloned:
-# git clone <repository-url>
-# cd osint-correlation-framework
-
-# Activate virtual environment (already created)
-.venv\Scripts\Activate.ps1  # Windows
-# OR
-source .venv/bin/activate   # Linux/Mac
-```
-
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-*Note: This includes `praw==7.7.0` for Reddit API access*
-
-### 3. **GET REDDIT API CREDENTIALS (MANDATORY)**
-**You MUST complete this step for the demo to work:**
-1. Visit: https://www.reddit.com/prefs/apps
-2. Click "Create App" or "Create Another App"
-3. Choose "script" as the app type
-4. Fill in:
-   - Name: `OSINTFrameworkDemo` (or similar)
-   - Description: `OSINT Framework Mid-Term Demo`
-   - About URL: `https://github.com/yourusername/osint-framework` (can be placeholder)
-   - Redirect URI: `http://localhost:8080` (can be anything for script auth)
-5. Click "Create App"
-6. Note your:
-   - **Client ID** (found under the app name)
-   - **Client Secret** (found under 'secret' field)
-
-### 4. Configure Environment Variables
-```bash
-# Copy the example environment file
-copy .env.example .env  # Windows
-# OR
-cp .env.example .env    # Linux/Mac
-
-# Edit .env and add your credentials:
-# REDDIT_CLIENT_ID=your_actual_client_id_here
-# REDDIT_CLIENT_SECRET=your_actual_client_secret_here
-# REDDIT_USER_AGENT=OSINTFrameworkDemo/1.0 by your_reddit_username
-```
-
-### 5. Initialize Database
-```bash
-python -c "from app.database import create_tables; create_tables(); print('Database initialized')"
-```
-
-## 🎯 Mid-Term Demo: What to Show
-
-Run the demonstration script to see your framework in action:
-
-```bash
-python demo_midterm.py
-```
-
-This will show:
-1. 🔍 **Entity extraction** from sample social media text
-2. 💾 **Database storage** of crawled data and entities
-3. 📊 **Investigation statistics** 
-4. 🔎 **Entity search capabilities**
-5. 🎓 **Presentation tips** for your mid-term evaluation
-
-### Expected Output:
-```
-🚀 OSINT FRAMEWORK MID-TERM DEMO
-==================================================
-
-🔧 ENVIRONMENT SETUP CHECK
-...
-
-🎯 ENTITY EXTRACTION DEMO
-...
-🔍 Extracted Entities:
-  USERNAMES: @johndoe
-  EMAILS: john.doe@example.com
-  URLS: https://example.com/path
-  PHONE_NUMBERS: +1-555-123-4567
-  HASHTAGS: #BreakingNews, #Tech
-  CRYPTO_ADDRESSES: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa, 0x742d35Cc...
-
-💾 DATABASE OPERATIONS DEMO
-...
-📊 Investigation Stats:
-  Total crawled records: 1
-  Total unique entities: 8
-  Entities by type: {
-    'usernames': 2,
-    'emails': 1,
-    'urls': 2,
-    'hashtags': 2,
-    'crypto_addresses': 2
-  }
-
-🔍 Entity Search Examples:
-  Found 'spez': 1 match(es)
-    - username: spez (from reddit)
-  Found 'api@reddit.com': 1 match(es)
-    - email: api@reddit.com (from reddit)
-  ...
-
-🎓 MID-TERM PRESENTATION TIPS
-...
-```
-
-## 📁 File Structure
-
-```
-osint-correlation-framework/
-├── README.md                 # This file
-├── .gitignore               # Ignores secrets, __pycache__, *.db, etc.
-├── requirements.txt         # Python dependencies (includes praw)
-├── .env.example             # Template for credentials (copy to .env)
-├── demo_midterm.py          # Mid-term demonstration script
-├── test_demo.py             # Component verification tests
-├── osint.db                 # SQLite database (auto-generated)
-├── app/
-│   ├── __init__.py
-│   ├── main.py              # FastAPI application
-│   ├── database.py          # Enhanced database operations
-│   ├── entity_extractor.py  # Entity extraction logic
-│   ├── reddit_crawler.py    # Reddit API crawler (**requires credentials**)
-│   └── schemas.py           # Pydantic models
-└── .venv/                   # Virtual environment (already created)
-```
-
-## 💻 API Endpoints
-
-The FastAPI application provides these endpoints:
-
-```
-GET  /                    # API root - "API is running"
-GET  /health              # Health check - returns {"status": "healthy"}
-POST /api/investigations  # Create new investigation
-                           # Body: {"query": "string", "sources": ["array"]}
-                           # Returns: investigation ID and details
-
-GET  /docs                # Automatic Swagger UI documentation
-GET  /redoc               # Alternative ReDoc documentation
-```
-
-## 📈 Mid-Term Presentation Guide
-
-### 🎯 What to Demonstrate:
-1. **Working Code Showcase**
-   - Open `app/reddit_crawler.py` - show the Reddit API integration (**emphasize that credentials are required**)
-   - Open `app/entity_extractor.py` - show the regex patterns for 6 entity types
-   - Open `app/database.py` - show the enhanced schema for provenance tracking
-
-2. **Live Demo Execution**
-   - Run: `python demo_midterm.py`
-   - Show entity extraction from sample text
-   - Show database storage and retrieval
-   - Show investigation statistics
-
-3. **Explain the Architecture**
-   - **Data Flow**: Reddit API → Raw Data Storage → Entity Extraction → Entity Storage
-   - **Provenance**: Every entity stores source platform, identifier, extraction time
-   - **Normalization**: Usernames lowercased, URLs stripped of tracking params, etc.
-   - **Foundation**: This enables cross-platform correlation (future work)
-
-### 💬 Key Talking Points:
-- **"We've solved the first hard problem: automated data collection and entity extraction"**
-- **"Instead of manually visiting Reddit profiles, our crawler fetches posts/comments and extracts key identifiers"**
-- **"Each extracted entity is stored with full provenance - we know exactly where it came from"**
-- **"This foundation lets us add more platforms (YouTube, Twitter, etc.) without changing the core logic"**
-- **"The extracted entities form the basis for our multi-signal correlation engine (to be built post-midterm)"**
-- **"We're respecting platform terms by only accessing public data through official APIs where available"**
-- **"**CRITICAL: The Reddit crawler requires API credentials - it does not connect automatically**"
-
-### 📊 Show These Results:
-- Number of entities extracted from sample text
-- Database statistics showing stored crawled data and entities
-- Successful entity search demonstrations
-- Clear before/after: raw social media text → structured entity data
-
-## 🔮 Future Work (Post-Midterm)
-
-1. **Add More Platforms**:
-   - YouTube crawler (YouTube Data API)
-   - Twitter/X crawler (Twitter API v2)
-   - Instagram (limited public data via web scraping with rate limiting)
-   - Reddit enhancements (subreddit monitoring, search)
-
-2. **Build Multi-Signal Correlation Engine**:
-   - Exact identifier matches (username, email, etc.)
-   - Fuzzy string similarity (Levenshtein, Jaro-Winkler for usernames)
-   - Shared contextual analysis (bio keywords, linked websites)
-   - Temporal activity patterns (posting frequency, time of day)
-   - Network analysis (common followers/friends when available via API)
-
-3. **Explainability & Visualization**:
-   - Web dashboard showing correlation networks
-   - "Why correlated?" explanations showing which signals contributed
-   - Confidence score breakdown by signal type
-   - Timeline views of entity activity
-
-4. **Advanced Features**:
-   - Entity resolution and merging
-   - Alerting for new entity sightings
-   - Export capabilities (CSV, JSON, PDF reports)
-   - Rate limiting and error handling for production use
-
-## 🙏 Acknowledgments
-
-- Reddit for providing public API access (requires developer registration and credentials)
-- FastAPI team for excellent Python API framework
-- PRAW team for Reddit API wrapper
-- Open-source OSINT community for inspiration and ethical guidelines
+Built with **FastAPI, SQLite, Python, HTML, CSS, and JavaScript**, the project focuses on modular backend development, data processing, source normalization, and transparent evidence-based correlation.
 
 ---
 
-**🎯 Ready for Mid-Term**: Demonstrate working crawler → entity extraction → stored provenance  
-**🔑 REMEMBER**: You **MUST** get Reddit API credentials for the demo to work  
-**💡 Tip**: Show working code and clear progression from idea to demonstrable result!
+## ✨ Key Features
+
+### 🌐 Multi-Source Intelligence Collection
+
+- 🔎 Collects public search results from **Hacker News, DEV Community, and Stack Overflow**.
+- 🔄 Normalizes collected information into consistent record structures.
+- 🧹 Filters duplicate records using source identifiers.
+- ⚡ Handles individual source failures without terminating the entire search.
+- 📊 Displays aggregated search results through a web dashboard.
+
+### 🧠 Cross-Source Indicator Correlation
+
+- 📧 Extracts email addresses from supplied source records.
+- 🔗 Extracts and normalizes URL hostnames.
+- 🧩 Identifies indicators appearing across multiple independent sources.
+- 📈 Calculates distinct source counts.
+- 🧾 Provides supporting source references for each match.
+
+**Note:** Shared technical indicators are evidence of overlap, not proof that separate accounts belong to the same person.
+
+### 🗄️ SQLite Database Components
+
+- Investigation and entity storage modules.
+- Source-record persistence functions.
+- Indexed database queries.
+- Provenance metadata for tracing collected information.
+
+### 🖥️ Interactive Web Dashboard
+
+- Search interface for public intelligence collection.
+- Aggregated source results.
+- FastAPI-powered backend integration.
+- Responsive frontend built with HTML, CSS, and JavaScript.
+
+The correlation API is implemented separately and is not yet automatically connected to live dashboard searches.
+
+---
+
+## 🏗️ System Architecture
+
+```text
+                  👤 User
+                     |
+                     v
+             🖥️ Web Dashboard
+              HTML / CSS / JS
+                     |
+                     v
+               ⚡ FastAPI
+                REST Layer
+                     |
+          +----------+----------+
+          |                     |
+          v                     v
+    🌐 OSINT Collectors    🧠 Correlation API
+          |                     |
+    +-----+------+       Indicator Extraction
+    |     |      |               |
+ Hacker  DEV    Stack            v
+ News  Community Overflow   Cross-Source Matches
+    |     |      |
+    +-----+------+
+          |
+          v
+    Normalized Results
+
+    🗄️ SQLite Storage Modules
+       (separate components)
+```
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| 🐍 Language | Python |
+| ⚡ Backend | FastAPI, Uvicorn |
+| 🗄️ Database | SQLite |
+| 🎨 Frontend | HTML, CSS, JavaScript |
+| 🧠 Processing | Regular Expressions, Data Normalization |
+| 🌐 Integration | Public OSINT Sources |
+| 📚 Documentation | OpenAPI / Swagger UI |
+
+---
+
+## 📁 Project Structure
+
+```text
+osint-correlation-framework/
+│
+├── app/
+│   ├── main.py
+│   ├── correlation.py
+│   ├── entity_extractor.py
+│   ├── database.py
+│   └── ...
+│
+├── requirements.txt
+├── README.md
+└── ...
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/Itssubhadeep/osint-correlation-framework.git
+cd osint-correlation-framework
+```
+
+### 2️⃣ Create a Virtual Environment
+
+**Windows PowerShell**
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+### 3️⃣ Install Dependencies
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+Ensure `requirements.txt` is saved in UTF-8 encoding.
+
+### 4️⃣ Launch the Application
+
+```powershell
+python -m uvicorn app.main:app --reload --port 8080
+```
+
+### 5️⃣ Access the Application
+
+| Service | Local URL |
+|---|---|
+| 🖥️ Web Dashboard | http://127.0.0.1:8080/dashboard |
+| 📚 API Documentation | http://127.0.0.1:8080/docs |
+| ❤️ API Root | http://127.0.0.1:8080/ |
+
+---
+
+## 🔌 REST API
+
+### 🔎 Search Intelligence
+
+**`POST /api/search`**
+
+Collects and aggregates publicly available information from supported OSINT sources.
+
+### 🧠 Correlate Indicators
+
+**`POST /api/correlate`**
+
+Identifies shared email addresses and URL hostnames across records from distinct sources.
+
+**📤 Example Request**
+
+```json
+{
+  "records": [
+    {
+      "source": "Hacker News",
+      "external_id": "101",
+      "content": "Contact security@example.org"
+    },
+    {
+      "source": "DEV Community",
+      "external_id": "202",
+      "content": "Email security@example.org"
+    }
+  ]
+}
+```
+
+**📥 Example Response**
+
+```json
+{
+  "total_records": 2,
+  "total_correlations": 1,
+  "correlations": [
+    {
+      "indicator_type": "email",
+      "indicator": "security@example.org",
+      "sources": [
+        "DEV Community",
+        "Hacker News"
+      ],
+      "source_count": 2,
+      "evidence": [
+        {
+          "source": "DEV Community",
+          "external_id": "202"
+        },
+        {
+          "source": "Hacker News",
+          "external_id": "101"
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 🧪 Testing & Validation
+
+The project includes initial component-level tests and supports manual API testing through FastAPI's Swagger UI.
+
+To verify the correlation module, run:
+
+```powershell
+python -c "from app.correlation import correlate_records; print(correlate_records([{'source':'Hacker News','external_id':'1','content':'Contact test@example.org'},{'source':'DEV Community','external_id':'2','content':'Email test@example.org'}]))"
+```
+
+Expected behavior: the output contains one email indicator shared by two distinct sources.
+
+---
+
+## 📊 Current Capabilities
+
+| Capability | Status |
+|---|---|
+| Multi-source public data collection | ✅ Implemented |
+| FastAPI backend | ✅ Implemented |
+| Interactive search dashboard | ✅ Implemented |
+| Email and domain extraction | ✅ Implemented |
+| Cross-source indicator matching API | ✅ Implemented |
+| SQLite storage components | ✅ Implemented |
+| Automatic dashboard correlation | 🚧 Planned |
+| Live-search database persistence | 🚧 In progress |
+| Advanced entity resolution | 📋 Planned |
+
+---
+
+## 🗺️ Development Roadmap
+
+- [x] Build modular FastAPI backend.
+- [x] Integrate multiple public data sources.
+- [x] Implement normalized search results.
+- [x] Develop web dashboard.
+- [x] Implement basic indicator extraction.
+- [x] Add cross-source correlation API.
+- [ ] Automatically correlate live search results.
+- [ ] Connect investigation storage to live search.
+- [ ] Add comprehensive API integration tests.
+- [ ] Introduce relationship graph visualization.
+- [ ] Improve source error handling and rate-limit management.
+
+---
+
+## ⚠️ Known Limitations
+
+- Correlation currently uses exact normalized indicators, not probabilistic identity matching.
+- Some external sources may be temporarily unavailable or rate-limited.
+- Live search results are not automatically persisted through the search endpoint.
+- Correlation results are accessible through the API rather than a dedicated dashboard visualization.
+
+---
+
+## 🔐 Ethical & Responsible Use
+
+This project is intended for **educational research, authorized investigations, and analysis of publicly available information**.
+
+Users should respect privacy, source terms of service, applicable laws, and data-retention requirements. The framework should not be used to harass, profile, or deanonymize individuals.
+
+---
+
+## 👨‍💻 Developer
+
+**Subhadeep Ghosh**
+
+🎓 Master of Computer Applications (MCA)
+
+🔐 Cybersecurity | Digital Forensics | Python Backend Development
+
+🌐 **GitHub:** https://github.com/Itssubhadeep
+
+🔗 **Project Repository:** https://github.com/Itssubhadeep/osint-correlation-framework
+
+---
+
+### ⭐ Support the Project
+
+If you find this project useful, consider giving the repository a star!
+
+*Built with Python, curiosity, and a focus on responsible security engineering.*
